@@ -162,3 +162,29 @@ curl http://localhost:3000/api/status/config
 **WS** `/socket.io`
 - Real-time order book updates
 - Emits depth data on order book changes
+
+## Live Demo (ngrok)
+
+Public URL: `https://lobular-unreproachfully-inez.ngrok-free.dev`
+
+Test endpoints via ngrok:
+```bash
+# Market order (buy)
+curl -X POST https://lobular-unreproachfully-inez.ngrok-free.dev/api/market \
+  -H "Content-Type: application/json" \
+  -d '{"side": "buy", "amount": 0.5}'
+
+# Market order (sell)
+curl -X POST https://lobular-unreproachfully-inez.ngrok-free.dev/api/market \
+  -H "Content-Type: application/json" \
+  -d '{"side": "sell", "amount": 1.2}'
+
+# Order history
+curl https://lobular-unreproachfully-inez.ngrok-free.dev/api/orders/history
+
+# Health check
+curl https://lobular-unreproachfully-inez.ngrok-free.dev/api/health
+
+# WebSocket connection
+wscat -c wss://lobular-unreproachfully-inez.ngrok-free.dev/socket.io/
+```
