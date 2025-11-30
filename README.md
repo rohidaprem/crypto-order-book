@@ -167,24 +167,137 @@ curl http://localhost:3000/api/status/config
 
 Public URL: `https://lobular-unreproachfully-inez.ngrok-free.dev`
 
-Test endpoints via ngrok:
+⚠️ **Note:** When accessing via browser, ngrok shows a security interstitial page. Use curl commands below to test the API directly (they bypass this page).
+
+### Test Endpoints via curl
+
+**Market Order (Buy)**
 ```bash
-# Market order (buy)
+curl -X POST https://lobular-unreproachfully-inez.ngrok-free.dev/api/market \
+  -H "Content-Type: application/json" \
+  -d '{"side": "buy", "amount": 0.5}'
+```
+
+**Market Order (Sell)**
+```bash
+curl -X POST https://lobular-unreproachfully-inez.ngrok-free.dev/api/market \
+  -H "Content-Type: application/json" \
+  -d '{"side": "sell", "amount": 1.2}'
+```
+
+**Order History**
+```bash
+curl https://lobular-unreproachfully-inez.ngrok-free.dev/api/orders/history
+```
+
+**Health Check**
+```bash
+curl https://lobular-unreproachfully-inez.ngrok-free.dev/api/health
+```
+
+**Status**
+```bash
+curl https://lobular-unreproachfully-inez.ngrok-free.dev/api/status
+```
+
+**WebSocket Connection (via Node.js test script)**
+```bash
+# WebSocket test script for localhost (direct connection)
+# Note: WebSocket via ngrok free tier has limitations
+# For ngrok testing, use the REST API test script below
+
+# For local development:
+node test-websocket.js
+```
+
+**REST API Test Script (Recommended for ngrok)**
+```bash
+# Comprehensive API test script that tests all endpoints
+# Works reliably with ngrok free tier
+node test-api.js
+```
+
+Output:
+```
+🚀 Testing Crypto Order Book API
+
+📋 Test 1: Health Check (GET /api/health)
+✅ Status: 200
+   Redis: connected
+   Exchange: connected
+   Order Book: running
+
+📋 Test 2: Market Buy Order (POST /api/market)
+✅ Status: 201
+   Filled: 0.1 BTC
+   Avg Price: $90889.92
+   Slippage: 0%
+
+📋 Test 3: Market Sell Order (POST /api/market)
+✅ Status: 201
+   Filled: 0.05 BTC
+   Avg Price: $90889.91
+   Slippage: 0%
+
+📋 Test 4: Order History (GET /api/orders/history)
+✅ Status: 200
+   Total Orders: 5
+   Total BTC Traded: 4.7153 BTC
+
+✅ All tests passed!
+```
+
+### Sample Response (Market Order)
+```json
+{
+  "filled": 0.5,
+  "avg_price": 103456.78,
+  "slippage_pct": 0.12,
+  "status": "filled",
+  "fills": [
+    { "price": 103450, "quantity": 0.25 },
+    { "price": 103460, "quantity": 0.25 }
+  ]
+}
+```
+
+### ✅ Status
+- ✅ Buy/Sell market orders working via curl (POST `/api/market`)
+- ✅ Order history working via curl (GET `/api/orders/history`)
+- ✅ Health check operational (GET `/api/health`)
+- ✅ Status endpoints working (GET `/api/status`, `/api/status/config`)
+- ✅ Real-time WebSocket updates active (via `test-websocket.js`)
+- ✅ Redis sorted sets storing bids/asks
+- ✅ Pub/Sub channel publishing depth updates every 2 seconds
+
+### Running Tests
+
+**Quick Test - Run the comprehensive API test script:**
+```bash
+node test-api.js
+```
+
+**Manual curl tests (all working online):**
+```bash
+# Test 1: Market Order (Buy)
 curl -X POST https://lobular-unreproachfully-inez.ngrok-free.dev/api/market \
   -H "Content-Type: application/json" \
   -d '{"side": "buy", "amount": 0.5}'
 
-# Market order (sell)
+# Test 2: Market Order (Sell)
 curl -X POST https://lobular-unreproachfully-inez.ngrok-free.dev/api/market \
   -H "Content-Type: application/json" \
   -d '{"side": "sell", "amount": 1.2}'
 
-# Order history
+# Test 3: Get Order History (GET)
 curl https://lobular-unreproachfully-inez.ngrok-free.dev/api/orders/history
 
-# Health check
+# Test 4: Health Check (GET)
 curl https://lobular-unreproachfully-inez.ngrok-free.dev/api/health
 
-# WebSocket connection
-wscat -c wss://lobular-unreproachfully-inez.ngrok-free.dev/socket.io/
+# Test 5: Status (GET)
+curl https://lobular-unreproachfully-inez.ngrok-free.dev/api/status
+
+# Test 6: Config (GET)
+curl https://lobular-unreproachfully-inez.ngrok-free.dev/api/status/config
 ```
