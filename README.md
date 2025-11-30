@@ -51,6 +51,51 @@ npm test -- --coverage
 npm run test:watch
 ```
 
+## Redis CLI Access
+
+To access Redis CLI when it's running in Docker:
+
+```bash
+docker exec -it crypto-order-book-redis-1 redis-cli
+```
+
+Once inside redis-cli, use these commands to inspect the order book:
+
+```redis
+# View all keys in Redis
+> KEYS *
+
+# Check current bids (highest prices first - top 10)
+> ZREVRANGE bids 0 9 WITHSCORES
+
+# Check current asks (lowest prices first - top 10)  
+> ZRANGE asks 0 9 WITHSCORES
+
+# Get number of bids and asks
+> ZCARD bids
+> ZCARD asks
+
+# Get the best bid and ask prices
+> ZREVRANGE bids 0 0 WITHSCORES
+> ZRANGE asks 0 0 WITHSCORES
+
+# Subscribe to real-time depth updates
+> SUBSCRIBE depth:update
+
+# Monitor all Redis commands in real-time
+> MONITOR
+
+# Check Redis memory usage
+> INFO memory
+
+# Get total number of keys
+> DBSIZE
+
+# Clear all order book data (use with caution)
+> DEL bids asks
+> FLUSHDB
+```
+
 ## API Endpoints
 
 ### Market Orders
