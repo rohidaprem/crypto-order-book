@@ -26,8 +26,10 @@ function validateEnv(): void {
     }
 }
 
-// Validate on load
-validateEnv();
+// Validate on load (skip in test environment)
+if (process.env.NODE_ENV !== 'test') {
+    validateEnv();
+}
 
 /**
  * Application Configuration
